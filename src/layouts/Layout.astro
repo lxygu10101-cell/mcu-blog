@@ -1,0 +1,34 @@
+---
+import '../styles/global.css';
+import { site, url } from '../lib/site';
+const { title = '从一行 C，到一个真实的作品', description = site.description } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [['首页',''],['项目','projects/'],['博客','blog/'],['工具箱','tools/'],['关于','about/']];
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content={description}/><meta name="theme-color" content="#101315"/>
+  <title>{title} · MCU / NOTES</title>
+  <link rel="icon" type="image/svg+xml" href={url('favicon.svg')}/>
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)}/>
+  <meta property="og:title" content={`${title} · MCU / NOTES`}/><meta property="og:description" content={description}/><meta property="og:type" content="website"/>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="header wrap">
+    <a class="brand" href={url()} aria-label="MCU NOTES 首页"><span class="brand-icon">μ</span><span>MCU<span class="brand-slash"> / </span>NOTES<small>嵌入式开发手记</small></span></a>
+    <nav aria-label="主导航">{nav.map(([name,href]) => <a href={url(href)} class:list={[path === url(href) && 'active']}>{name}</a>)}</nav>
+    <a class="search-trigger" href={url('search/')} aria-label="搜索文章与项目"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>/</kbd></a>
+  </header>
+  <main id="main"><slot/></main>
+  <footer class="footer wrap"><div><a class="footer-brand" href={url()}>MCU / NOTES</a><p>认真记录每一次，从想法到实现。</p></div><div class="footer-links"><a href={site.github} target="_blank" rel="noreferrer">GitHub</a><a href={url('blog/obsidian-publishing/')}>写作指南</a><a href={url('about/')}>关于本站</a><span>© {new Date().getUTCFullYear()} MCU / NOTES</span></div></footer>
+  <script>
+    document.addEventListener('keydown', (event) => {
+      const target = event.target as HTMLElement;
+      if(event.key === '/' && !event.ctrlKey && !event.metaKey && !['INPUT','TEXTAREA','SELECT'].includes(target.tagName) && !target.isContentEditable){event.preventDefault(); (document.querySelector('.search-trigger') as HTMLAnchorElement)?.click();}
+    });
+  </script>
+</body>
+</html>

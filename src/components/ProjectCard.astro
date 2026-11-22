@@ -1,0 +1,8 @@
+---
+import { url } from '../lib/site';
+const { project } = Astro.props;
+---
+<a class="project-card" href={url(`projects/${project.id}/`)}>
+  <div class="project-image"><img src={url(project.data.cover)} alt={`${project.data.title}概念示意图`} loading="lazy" width="640" height="400"/><span class="image-label">{project.data.status}</span></div>
+  <div class="project-info"><div class="tags">{project.data.tags.map((tag: string) => <span>{tag}</span>)}</div><h3>{project.data.title}</h3><p>{project.data.description}</p><span class="text-link">查看项目详情 <span>＋</span></span></div>
+</a>

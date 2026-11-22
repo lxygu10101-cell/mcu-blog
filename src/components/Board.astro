@@ -1,0 +1,34 @@
+---
+const { variant = 'board' } = Astro.props;
+---
+<svg class:list={['board-art', variant]} viewBox="0 0 640 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="嵌入式开发板概念插图，并非实际项目照片">
+  <defs>
+    <pattern id={`grid-${variant}`} width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" stroke-opacity=".06"/></pattern>
+    <linearGradient id={`pcb-${variant}`} x2="1" y2="1"><stop stop-color="#183f39"/><stop offset="1" stop-color="#0c2428"/></linearGradient>
+    <filter id={`shadow-${variant}`}><feDropShadow dx="0" dy="22" stdDeviation="20" flood-opacity=".5"/></filter>
+  </defs>
+  <rect width="640" height="440" fill={`url(#grid-${variant})`}/>
+  <g transform="translate(122 65) rotate(-8 195 150)" filter={`url(#shadow-${variant})`}>
+    <rect width="390" height="300" rx="18" fill={`url(#pcb-${variant})`} stroke="#387569"/>
+    {[20,370].map(x => [20,280].map(y => <><circle cx={x} cy={y} r="8" fill="#111b20" stroke="#76968b" stroke-width="3"/></>))}
+    <g fill="none" stroke="#65b59a" stroke-opacity=".4" stroke-width="2">
+      <path d="M25 80H120L150 110M25 120H95L140 165M25 220H105L150 175M240 100L270 70H360M240 125H300L345 170H365M240 155H280V240H360M210 200V255H325M170 200V260H100"/>
+      <path d="M25 250H75V190H135M245 180H265V270H360M225 100V45H130M195 95V35H65"/>
+    </g>
+    <g fill="#d8b672">{Array.from({length:14},(_,i) => <><rect x="38" y={48+i*15} width="11" height="7" rx="1"/><rect x="341" y={48+i*15} width="11" height="7" rx="1"/></>)}</g>
+    <g fill="#93a9a5">{Array.from({length:8},(_,i) => <><rect x={151+i*11} y="94" width="5" height="15"/><rect x={151+i*11} y="190" width="5" height="15"/><rect x="130" y={115+i*10} width="15" height="4"/><rect x="231" y={115+i*10} width="15" height="4"/></>)}</g>
+    <rect x="144" y="107" width="89" height="85" rx="3" fill="#111a20" stroke="#73817e"/>
+    <circle cx="154" cy="118" r="3" fill="#73938b"/>
+    <text x="188" y="146" text-anchor="middle" fill="#cce6df" font-family="monospace" font-size="14">STM32</text>
+    <text x="188" y="165" text-anchor="middle" fill="#72998d" font-family="monospace" font-size="9">CORTEX · M</text>
+    <rect x="68" y="133" width="32" height="58" rx="5" fill="#a5b3ad" stroke="#dae6df"/>
+    <rect x="72" y="139" width="24" height="46" rx="3" fill="#24332f"/>
+    <rect x="275" y="108" width="32" height="13" rx="3" fill="#aaa99a"/>
+    <rect x="275" y="146" width="18" height="32" rx="2" fill="#111a20" stroke="#547b6e"/>
+    <circle cx="113" cy="67" r="5" fill="#b7f47b"/>
+    <text x="128" y="71" fill="#a6c8b8" font-family="monospace" font-size="10">PWR</text>
+    <text x="145" y="237" fill="#91b9aa" font-family="monospace" font-size="12" letter-spacing="3">MCU / NOTES</text>
+    <text x="145" y="256" fill="#629385" font-family="monospace" font-size="8">IDEAS INTO HARDWARE</text>
+  </g>
+  <g font-family="monospace" font-size="11" fill="#81b3a5"><text x="36" y="47">// HARDWARE EXPLORATIONS</text><text x="458" y="402">CONCEPT / PCB</text></g>
+</svg>

@@ -1,0 +1,8 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { url, date } from '../../lib/site';
+const posts = (await getCollection('blog',({data})=>!data.draft)).sort((a,b)=>b.data.date.valueOf()-a.data.date.valueOf());
+const tags = [...new Set(posts.flatMap(p=>p.data.tags))];
+---
+<Layout title="技术博客"><section class="wrap page-section"><p class="eyebrow">NOTES & EXPLORATIONS</p><h1 class="page-title">把走过的路，写下来。</h1><p class="page-lead">代码背后的思考，调试过程中的发现，以及值得复用的方法。</p><div class="filter-bar" aria-label="按标签筛选文章"><button class="filter active" data-tag="all" aria-pressed="true">全部文章</button>{tags.map(tag=><button class="filter" data-tag={tag} aria-pressed="false">{tag}</button>)}</div><div class="post-list">{posts.map(post=><a class="post-row filter-post" data-tags={JSON.stringify(post.data.tags)} href={url(`blog/${post.id}/`)}><span class="post-date mono">{date(post.data.date)}</span><div><div class="post-meta">{post.data.category} · {post.data.tags.join(' / ')}</div><h2>{post.data.title}</h2><p>{post.data.description}</p></div><span class="row-plus" aria-hidden="true">＋</span></a>)}</div></section><script>document.querySelectorAll<HTMLButtonElement>('.filter').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});button.classList.add('active');button.setAttribute('aria-pressed','true');document.querySelectorAll<HTMLElement>('.filter-post').forEach(post=>post.hidden=button.dataset.tag!=='all' && !JSON.parse(post.dataset.tags||'[]').includes(button.dataset.tag));}));</script></Layout>

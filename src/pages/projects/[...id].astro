@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { url } from '../../lib/site';
+export async function getStaticPaths(){return (await getCollection('projects',({data})=>!data.draft)).map(project=>({params:{id:project.id},props:{project}}));}
+const { project } = Astro.props;
+const { Content, headings } = await render(project);
+---
+<Layout title={project.data.title} description={project.data.description}><article class="wrap detail-section"><a class="breadcrumb" href={url('projects/')}>项目作品集 / {project.data.status}</a><h1 class="page-title">{project.data.title}</h1><p class="page-lead">{project.data.description}</p><div class="tags">{project.data.tags.map(tag=><span>{tag}</span>)}</div><img class="detail-cover" src={url(project.data.cover)} alt="项目概念示意图，非实物照片" width="1200" height="650"/><div class="article-layout"><div class="prose"><Content/>{project.data.video && <figure><video controls preload="metadata" src={url(project.data.video)} aria-label="项目演示视频"><a href={url(project.data.video)}>下载项目视频</a></video><figcaption>项目演示视频</figcaption></figure>}{project.data.repository && <a class="button secondary" href={project.data.repository} target="_blank" rel="noreferrer">查看项目源码</a>}</div><aside class="toc"><p>本页目录</p>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<div class="toc-note">从现象到原因，<br/>每一步都值得记录。</div></aside></div></article></Layout>

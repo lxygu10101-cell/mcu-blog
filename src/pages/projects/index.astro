@@ -1,0 +1,7 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+const projects = await getCollection('projects', ({data})=>!data.draft);
+---
+<Layout title="项目作品集"><section class="wrap page-section"><p class="eyebrow">PROJECT ARCHIVE</p><h1 class="page-title">让代码，在硬件上运行。</h1><p class="page-lead">从需求、系统设计到调试记录，保留一个项目的完整脉络。</p><div class="notice">当前展示的是项目模板与概念插图，尚未录入作者的真实项目、照片或性能数据。</div><div class="project-grid">{projects.map(project=><ProjectCard project={project}/>)}</div></section></Layout>

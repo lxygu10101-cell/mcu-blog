@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { url, date } from '../../lib/site';
+export async function getStaticPaths(){return (await getCollection('blog',({data})=>!data.draft)).map(post=>({params:{id:post.id},props:{post}}));}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const minutes = Math.max(1,Math.ceil((post.body?.length || 0)/500));
+---
+<Layout title={post.data.title} description={post.data.description}><article class="wrap detail-section"><a class="breadcrumb" href={url('blog/')}>开发手记 / {post.data.category}</a><h1 class="article-title">{post.data.title}</h1><p class="page-lead">{post.data.description}</p><div class="article-meta mono"><time datetime={post.data.date.toISOString()}>{date(post.data.date)}</time><span>约 {minutes} 分钟</span><span>{post.data.tags.join(' / ')}</span></div><div class="article-layout"><div><div class="prose"><Content/></div><div class="article-end"><span>记录，让下一次实现更从容。</span><a href={url('blog/')}>继续阅读</a></div></div><aside class="toc"><p>文章目录</p>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<a class="toc-note" href={url('tools/')}>计算与校验<br/>打开开发工具箱</a></aside></div></article></Layout>
