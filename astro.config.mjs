@@ -10,6 +10,6 @@ export default defineConfig({
   base,
   output: 'static',
   trailingSlash: 'always',
-  markdown: { processor: unified({ remarkPlugins: [[obsidian, { base }]] }), shikiConfig: { theme: 'github-dark' } },
+  markdown: { processor: unified({ remarkPlugins: [[obsidian, { base }]] }), shikiConfig: { theme: 'github-light' } },
   devToolbar: { enabled: false },
 });

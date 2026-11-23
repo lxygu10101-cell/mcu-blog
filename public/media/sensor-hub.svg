@@ -1,52 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-label="STM32 多传感器采集终端概念示意图">
   <defs>
     <pattern id="grid-sensor" width="32" height="32" patternUnits="userSpaceOnUse">
-      <path d="M32 0H0V32" fill="none" stroke="#7ec8a0" stroke-opacity=".07"/>
+      <path d="M32 0H0V32" fill="none" stroke="#1c5d7a" stroke-opacity=".075"/>
     </pattern>
     <linearGradient id="pcb-sensor" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#172421"/>
-      <stop offset="1" stop-color="#0f1719"/>
+      <stop offset="0" stop-color="#233b44"/>
+      <stop offset="1" stop-color="#192b33"/>
     </linearGradient>
+    <filter id="pcb-shadow" x="-10%" y="-10%" width="125%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#182226" flood-opacity=".14"/>
+    </filter>
   </defs>
-  <rect width="1200" height="650" fill="#101518"/>
+  <rect width="1200" height="650" fill="#f4f5f3"/>
   <rect width="1200" height="650" fill="url(#grid-sensor)"/>
-  <circle cx="600" cy="325" r="230" fill="none" stroke="#7ec8a0" stroke-opacity=".09"/>
-  <g transform="translate(365 115) rotate(-5 235 210)">
-    <rect width="470" height="420" rx="18" fill="url(#pcb-sensor)" stroke="#38534a" stroke-width="2"/>
-    <g fill="none" stroke="#7ec8a0" stroke-opacity=".35" stroke-width="2">
+  <circle cx="600" cy="325" r="236" fill="none" stroke="#1c5d7a" stroke-opacity=".11" stroke-dasharray="4 6"/>
+  <g transform="translate(365 115) rotate(-5 235 210)" filter="url(#pcb-shadow)">
+    <rect width="470" height="420" rx="18" fill="url(#pcb-sensor)" stroke="#355562" stroke-width="2"/>
+    <g fill="none" stroke="#7fb3c8" stroke-opacity=".4" stroke-width="2">
       <path d="M50 110H155L190 145M50 145H130L185 195M50 255H140L190 215M285 155H350V70H420M285 190H400M285 220H340V340H420M230 245V350H140M200 245V320H65"/>
       <path d="M50 300H120V230H170M250 130V65H150"/>
     </g>
-    <g fill="#b5a373" fill-opacity=".75">
+    <g fill="#d1b46a">
       <path d="M22 58h10v304H22zM438 58h10v304h-10z"/>
       <path d="M46 58h10v304H46zM414 58h10v304h-10z"/>
     </g>
-    <rect x="179" y="133" width="112" height="112" rx="6" fill="#0d1315" stroke="#627d73"/>
-    <g fill="#7d958c">
+    <rect x="179" y="133" width="112" height="112" rx="6" fill="#131e24" stroke="#6c8c99"/>
+    <g fill="#9ab3be">
       <path d="M170 140h9v95h-9zM291 140h9v95h-9zM190 124h88v9h-88zM190 245h88v9h-88z"/>
     </g>
-    <text x="235" y="184" text-anchor="middle" fill="#d7e6df" font-family="monospace" font-size="21">STM32</text>
-    <text x="235" y="207" text-anchor="middle" fill="#7c998e" font-family="monospace" font-size="12">SENSOR HUB</text>
-    <rect x="85" y="165" width="42" height="66" rx="5" fill="#6f7d78"/>
-    <rect x="91" y="171" width="30" height="54" fill="#1a2422"/>
-    <rect x="320" y="280" width="66" height="42" rx="5" fill="#11191b" stroke="#425d52"/>
-    <circle cx="103" cy="80" r="6" fill="#7ec8a0"/>
-    <text x="122" y="85" fill="#95b0a5" font-family="monospace" font-size="12">PWR</text>
-    <text x="176" y="302" fill="#8ca89c" font-family="monospace" font-size="16">MCU / NOTES</text>
-    <text x="176" y="324" fill="#5e796e" font-family="monospace" font-size="10">SAMPLE HARDWARE TEMPLATE</text>
-    <g fill="#0e1416" stroke="#6e7c76" stroke-width="3.5">
+    <text x="235" y="184" text-anchor="middle" fill="#eef4f6" font-family="monospace" font-size="21">STM32</text>
+    <text x="235" y="207" text-anchor="middle" fill="#8fb0be" font-family="monospace" font-size="12">SENSOR HUB</text>
+    <rect x="85" y="165" width="42" height="66" rx="5" fill="#8b9da4"/>
+    <rect x="91" y="171" width="30" height="54" fill="#213138"/>
+    <rect x="320" y="280" width="66" height="42" rx="5" fill="#15232a" stroke="#4d6e7b"/>
+    <circle cx="103" cy="80" r="6" fill="#70c4a8"/>
+    <text x="122" y="85" fill="#b4cbd4" font-family="monospace" font-size="12">PWR</text>
+    <text x="176" y="302" fill="#b8ced7" font-family="monospace" font-size="16">MCU / NOTES</text>
+    <text x="176" y="324" fill="#7f9fab" font-family="monospace" font-size="10">SAMPLE HARDWARE TEMPLATE</text>
+    <g fill="#f4f5f3" stroke="#859aa3" stroke-width="3.5">
       <circle cx="24" cy="24" r="8"/>
       <circle cx="446" cy="24" r="8"/>
       <circle cx="24" cy="396" r="8"/>
       <circle cx="446" cy="396" r="8"/>
     </g>
   </g>
-  <g font-family="monospace" font-size="13" fill="#6b8078">
+  <g font-family="monospace" font-size="13" fill="#64747c">
     <text x="56" y="56">HARDWARE / FIRMWARE</text>
     <text x="56" y="598">I²C · UART · DATA ACQUISITION</text>
     <text x="1144" y="598" text-anchor="end">CONCEPT DIAGRAM</text>
   </g>
-  <path d="M168 212h118M914 420h128" stroke="#7ec8a0" stroke-opacity=".4"/>
-  <circle cx="168" cy="212" r="3.5" fill="#7ec8a0"/>
-  <circle cx="1042" cy="420" r="3.5" fill="#7ec8a0"/>
+  <path d="M168 212h118M914 420h128" stroke="#1c5d7a" stroke-opacity=".35" stroke-width="1.5"/>
+  <circle cx="168" cy="212" r="4" fill="#1c5d7a"/>
+  <circle cx="1042" cy="420" r="4" fill="#1c5d7a"/>
 </svg>
