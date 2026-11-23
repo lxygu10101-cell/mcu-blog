@@ -22,13 +22,24 @@ const isActive = (href: string) => {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content={description} />
-  <meta name="theme-color" content="#fafaf9" />
+  <meta name="theme-color" content="#fafaf9" id="theme-color-meta" />
   <title>{pageTitle}</title>
   <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
   <link rel="canonical" href={new URL(currentPath, Astro.site)} />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
+  <script is:inline>
+    (() => {
+      try {
+        const stored = localStorage.getItem('mcu-theme');
+        const theme = stored === 'dark' || stored === 'light' ? stored : 'light';
+        document.documentElement.dataset.theme = theme;
+        const meta = document.getElementById('theme-color-meta');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e1013' : '#fafaf9');
+      } catch {}
+    })();
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
@@ -55,14 +66,32 @@ const isActive = (href: string) => {
         })}
       </nav>
 
-      <a class="search-trigger" href={url('search/')} aria-label="搜索文章与项目（按 / 键快速打开）" title="按 / 键搜索">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <circle cx="10.5" cy="10.5" r="6.5" />
-          <path d="m16 16 4.5 4.5" />
-        </svg>
-        <span>搜索</span>
-        <kbd>/</kbd>
-      </a>
+      <div class="header-actions">
+        <a class="search-trigger" href={url('search/')} aria-label="搜索文章与项目（按 / 键快速打开）" title="按 / 键搜索">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 4.5 4.5" />
+          </svg>
+          <span>搜索</span>
+          <kbd>/</kbd>
+        </a>
+
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="切换明暗主题"
+          title="切换明暗主题"
+        >
+          <svg class="icon-moon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z" />
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+          </svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -83,6 +112,41 @@ const isActive = (href: string) => {
   </footer>
 
   <script>
+    // Theme toggle (light / dark) with localStorage persistence
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeColorMeta = document.getElementById('theme-color-meta');
+
+    const applyTheme = (theme: 'light' | 'dark', persist = true) => {
+      if (persist) {
+        document.documentElement.classList.add('theme-switching');
+      }
+      document.documentElement.dataset.theme = theme;
+      if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', theme === 'dark' ? '#0e1013' : '#fafaf9');
+      }
+      if (themeToggle) {
+        const nextLabel = theme === 'dark' ? '切换到浅色主题' : '切换到深色主题';
+        themeToggle.setAttribute('aria-label', nextLabel);
+        themeToggle.setAttribute('title', nextLabel);
+        themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+      if (persist) {
+        void document.documentElement.offsetWidth;
+        document.documentElement.classList.remove('theme-switching');
+        try {
+          localStorage.setItem('mcu-theme', theme);
+        } catch {}
+      }
+    };
+
+    const initialTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    applyTheme(initialTheme, false);
+
+    themeToggle?.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
     // Keyboard shortcut: press '/' to jump to search
     document.addEventListener('keydown', (event) => {
       const target = event.target as HTMLElement | null;
