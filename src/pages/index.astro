@@ -1,19 +1,90 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Board from '../components/Board.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
-import { url, date } from '../lib/site';
-const projects = (await getCollection('projects', ({data})=>!data.draft)).slice(0,2);
-const posts = (await getCollection('blog', ({data})=>!data.draft)).sort((a,b)=>b.data.date.valueOf()-a.data.date.valueOf()).slice(0,3);
+import { url, formatDate } from '../lib/site';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
 ---
 <Layout>
-<section class="hero wrap">
-  <div class="hero-copy"><p class="eyebrow"><span class="small-square"></span> EMBEDDED SYSTEMS · BUILD & DOCUMENT</p><h1>把想法，<br/>写进<span class="accent">硬件。</span></h1><p class="hero-description">从一行 C 语言，到一块会思考的电路板。<br/>在这里，记录嵌入式开发的探索、实践与思考。</p><div class="hero-actions"><a class="button primary" href={url('projects/')}>探索项目</a><a class="button secondary" href={url('blog/')}>阅读开发手记</a></div><div class="hero-skills"><span>STM32</span><span>C / C++</span><span>硬件与固件</span><span>持续探索</span></div></div>
-  <div class="hero-visual"><div class="visual-top"><span>WORKBENCH / 嵌入式工作台</span><span class="mono">[ μC ]</span></div><Board/><div class="signal-strip"><svg viewBox="0 0 190 26" aria-hidden="true"><path d="M0 21H20V5H45V21H65V5H90V21H110V5H135V21H155V5H180V21H190" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>想法 · 代码 · 电路 · 实现</span></div></div>
-</section>
-<div class="topic-band"><div class="wrap"><span>小小的芯片，无限的可能</span><div><span>裸机开发</span><b>·</b><span>通信协议</span><b>·</b><span>驱动设计</span><b>·</b><span>工程实践</span></div></div></div>
-<section class="section wrap"><div class="section-head"><div><p class="eyebrow">SELECTED PROJECTS</p><h2>在实践中，连接想法。</h2></div><a class="quiet-link" href={url('projects/')}>全部项目 <span>＋</span></a></div><p class="section-intro">硬件、固件与完整的开发过程。以下为可替换的示例项目。</p><div class="project-grid">{projects.map(project=><ProjectCard project={project}/>)}</div></section>
-<section class="section wrap notes-section"><div class="section-head"><div><p class="eyebrow">FIELD NOTES</p><h2>开发路上的一些记录。</h2></div><a class="quiet-link" href={url('blog/')}>全部文章 <span>＋</span></a></div><div class="post-list">{posts.map(post=><a class="post-row" href={url(`blog/${post.id}/`)}><span class="post-date mono">{date(post.data.date)}</span><div><div class="post-meta">{post.data.category}</div><h3>{post.data.title}</h3><p>{post.data.description}</p></div><span class="row-plus" aria-hidden="true">＋</span></a>)}</div></section>
-<section class="tool-banner wrap"><div class="tool-symbol">0x<span>FF</span></div><div><p class="eyebrow">SMALL TOOLS, LESS FRICTION</p><h2>少一点换算，多一点专注。</h2><p>进制转换、定时器计算、CRC 校验，打开即用。</p></div><a class="button secondary" href={url('tools/')}>打开工具箱</a></section>
+  <section class="intro">
+    <div class="wrap">
+      <p class="eyebrow">
+        <span class="eyebrow-dot" aria-hidden="true"></span>
+        EMBEDDED SYSTEMS · FIRMWARE &amp; NOTES
+      </p>
+      <h1 class="intro-title">嵌入式开发笔记与硬件项目</h1>
+      <p class="intro-lead">
+        围绕 STM32、C 语言、外设驱动与通信协议，记录硬件设计、固件实现与调试验证过程。
+      </p>
+      <div class="intro-meta">
+        <div class="intro-actions">
+          <a class="button primary" href={url('projects/')}>查看项目</a>
+          <a class="button secondary" href={url('blog/')}>阅读博客</a>
+        </div>
+        <ul class="focus-list" aria-label="主要关注方向">
+          <li class="mono">STM32</li>
+          <li class="mono">C / C++</li>
+          <li>外设驱动</li>
+          <li>通信协议</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="section-index">01</span>
+          <h2>精选项目</h2>
+        </div>
+        <a class="quiet-link" href={url('projects/')}>全部项目 <span>→</span></a>
+      </div>
+      <p class="section-hint">记录系统架构、固件实现与调试过程；当前条目为可替换的示例项目模板。</p>
+      <div class="project-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} headingTag="h3" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-title-group">
+          <span class="section-index">02</span>
+          <h2>最新文章</h2>
+        </div>
+        <a class="quiet-link" href={url('blog/')}>全部文章 <span>→</span></a>
+      </div>
+      <div class="post-list">
+        {posts.map((post) => (
+          <a class="post-row" href={url(`blog/${post.id}/`)}>
+            <time class="post-date mono" datetime={post.data.date.toISOString()}>
+              {formatDate(post.data.date)}
+            </time>
+            <div class="post-content">
+              <h3 class="post-title">{post.data.title}</h3>
+              <p class="post-excerpt">{post.data.description}</p>
+              <div class="post-meta-line">
+                <span class="post-category">{post.data.category}</span>
+                {post.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <span class="post-arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 </Layout>

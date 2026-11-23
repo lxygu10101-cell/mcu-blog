@@ -34,14 +34,12 @@ fUPDATE = fTIM / ((PSC + 1) × (ARR + 1))
 
 如果每次中断仅翻转一次 LED 电平，一个完整的高低电平周期需要两次中断。此时输出方波频率是中断频率的一半。
 
-同时，PWM 输出还涉及对齐方式、CCR、极性和其他设置。本站工具箱的定时器工具计算的是上述条件下的更新频率，不将它直接称为所有模式下的 PWM 频率。
+同时，PWM 输出还涉及对齐方式、CCR、极性和其他设置，不应将上述条件下的更新频率直接等同于所有模式下的 PWM 输出频率。
 
 ## 调试时保留证据
 
 先以一个容易观察的慢周期运行。用示波器或逻辑分析仪测量一个专门用于调试的引脚，记录输入时钟、PSC、ARR 与测量结果。修改参数后，核对预装载与更新事件何时生效。
 
 计算前还应检查定时器位宽：16 位 ARR 最大为 65535，32 位最大为 4294967295，具体支持情况取决于芯片和定时器实例。
-
-你可以打开本站的 [开发工具箱](../../tools/) 复核计算。
 
 依据：[ST AN4013 定时器应用笔记](https://www.st.com/resource/en/application_note/an4013-introduction-to-timers-for-stm32-mcus-stmicroelectronics.pdf)、[ST 定时器入门说明](https://wiki.st.com/stm32mcu/wiki/Getting_started_with_TIM)。

@@ -2,4 +2,16 @@
 import Layout from '../layouts/Layout.astro';
 import { url } from '../lib/site';
 ---
-<Layout title="页面未找到"><section class="wrap page-section"><p class="eyebrow">404 / SIGNAL LOST</p><h1 class="page-title">信号暂时中断。</h1><p class="page-lead">这个页面不存在，或已经移动。</p><a class="button primary" href={url()}>返回首页</a></section></Layout>
+<Layout title="页面未找到">
+  <section class="wrap page-section">
+    <header class="page-header">
+      <p class="eyebrow">404 / NOT FOUND</p>
+      <h1 class="page-title">页面不存在</h1>
+      <p class="page-lead">你访问的地址可能已移除或拼写有误。</p>
+    </header>
+    <div class="intro-actions">
+      <a class="button primary" href={url()}>返回首页</a>
+      <a class="button secondary" href={url('blog/')}>浏览博客</a>
+    </div>
+  </section>
+</Layout>

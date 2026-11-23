@@ -1,9 +1,94 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Toc from '../../components/Toc.astro';
 import { getCollection, render } from 'astro:content';
-import { url } from '../../lib/site';
-export async function getStaticPaths(){return (await getCollection('projects',({data})=>!data.draft)).map(project=>({params:{id:project.id},props:{project}}));}
+import { url, formatDate } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
 const { project } = Astro.props;
 const { Content, headings } = await render(project);
 ---
-<Layout title={project.data.title} description={project.data.description}><article class="wrap detail-section"><a class="breadcrumb" href={url('projects/')}>项目作品集 / {project.data.status}</a><h1 class="page-title">{project.data.title}</h1><p class="page-lead">{project.data.description}</p><div class="tags">{project.data.tags.map(tag=><span>{tag}</span>)}</div><img class="detail-cover" src={url(project.data.cover)} alt="项目概念示意图，非实物照片" width="1200" height="650"/><div class="article-layout"><div class="prose"><Content/>{project.data.video && <figure><video controls preload="metadata" src={url(project.data.video)} aria-label="项目演示视频"><a href={url(project.data.video)}>下载项目视频</a></video><figcaption>项目演示视频</figcaption></figure>}{project.data.repository && <a class="button secondary" href={project.data.repository} target="_blank" rel="noreferrer">查看项目源码</a>}</div><aside class="toc"><p>本页目录</p>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<div class="toc-note">从现象到原因，<br/>每一步都值得记录。</div></aside></div></article></Layout>
+<Layout title={project.data.title} description={project.data.description}>
+  <article class="wrap detail-section">
+    <a class="breadcrumb" href={url('projects/')}>← 返回项目列表</a>
+
+    <header class="detail-header detail-header--wide">
+      <div class="detail-meta">
+        <span class="status-badge">{project.data.status}</span>
+        <span class="detail-meta-sep" aria-hidden="true">/</span>
+        <time class="mono" datetime={project.data.date.toISOString()}>{formatDate(project.data.date)}</time>
+      </div>
+      <h1 class="detail-title">{project.data.title}</h1>
+      <p class="detail-lead">{project.data.description}</p>
+
+      <div class="spec-strip" aria-label="项目概览参数">
+        <div class="spec-item">
+          <span class="spec-label">STATUS</span>
+          <span class="spec-value">{project.data.status}</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">TECH STACK</span>
+          <span class="spec-value">{project.data.tags.join(' · ')}</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">REPOSITORY</span>
+          <span class="spec-value">
+            {project.data.repository ? (
+              <a href={project.data.repository} target="_blank" rel="noreferrer">GitHub 源码 ↗</a>
+            ) : (
+              '待补充真实仓库'
+            )}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="detail-cover-wrap">
+      <img
+        class="detail-cover"
+        src={url(project.data.cover)}
+        alt={`${project.data.title}（${project.data.status}示意图）`}
+        width="1200"
+        height="650"
+      />
+      <figcaption class="detail-cover-caption">
+        {project.data.status === '示例项目' ? '概念示意图（示例模板，非实物照片）' : project.data.title}
+      </figcaption>
+    </figure>
+
+    <div class="article-layout">
+      <div class="article-main">
+        <Toc headings={headings} title="项目目录" mode="mobile" />
+
+        <div class="prose">
+          <Content />
+
+          {project.data.video && (
+            <figure>
+              <video controls preload="metadata" src={url(project.data.video)} aria-label="项目演示视频">
+                <a href={url(project.data.video)}>下载项目演示视频</a>
+              </video>
+              <figcaption>项目演示视频</figcaption>
+            </figure>
+          )}
+        </div>
+
+        <div class="detail-footer-bar">
+          <a href={url('projects/')}>← 浏览全部项目</a>
+          {project.data.repository && (
+            <a href={project.data.repository} target="_blank" rel="noreferrer">GitHub 源码 ↗</a>
+          )}
+        </div>
+      </div>
+
+      <Toc headings={headings} title="项目目录" mode="desktop" />
+    </div>
+  </article>
+</Layout>

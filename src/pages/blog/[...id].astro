@@ -1,10 +1,80 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Toc from '../../components/Toc.astro';
 import { getCollection, render } from 'astro:content';
-import { url, date } from '../../lib/site';
-export async function getStaticPaths(){return (await getCollection('blog',({data})=>!data.draft)).map(post=>({params:{id:post.id},props:{post}}));}
-const { post } = Astro.props;
+import { url, formatDate, readingMinutes } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  return posts.map((post, index) => ({
+    params: { id: post.id },
+    props: {
+      post,
+      newer: index > 0 ? posts[index - 1] : null,
+      older: index < posts.length - 1 ? posts[index + 1] : null,
+    },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
 const { Content, headings } = await render(post);
-const minutes = Math.max(1,Math.ceil((post.body?.length || 0)/500));
+const minutes = readingMinutes(post.body);
 ---
-<Layout title={post.data.title} description={post.data.description}><article class="wrap detail-section"><a class="breadcrumb" href={url('blog/')}>开发手记 / {post.data.category}</a><h1 class="article-title">{post.data.title}</h1><p class="page-lead">{post.data.description}</p><div class="article-meta mono"><time datetime={post.data.date.toISOString()}>{date(post.data.date)}</time><span>约 {minutes} 分钟</span><span>{post.data.tags.join(' / ')}</span></div><div class="article-layout"><div><div class="prose"><Content/></div><div class="article-end"><span>记录，让下一次实现更从容。</span><a href={url('blog/')}>继续阅读</a></div></div><aside class="toc"><p>文章目录</p>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<a class="toc-note" href={url('tools/')}>计算与校验<br/>打开开发工具箱</a></aside></div></article></Layout>
+<Layout title={post.data.title} description={post.data.description}>
+  <article class="wrap detail-section">
+    <a class="breadcrumb" href={url('blog/')}>← 返回技术博客</a>
+
+    <header class="detail-header">
+      <div class="detail-meta">
+        <span class="post-category">{post.data.category}</span>
+        <span class="detail-meta-sep" aria-hidden="true">/</span>
+        <time class="mono" datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span class="detail-meta-sep" aria-hidden="true">/</span>
+        <span class="tabular">约 {minutes} 分钟阅读</span>
+      </div>
+      <h1 class="detail-title">{post.data.title}</h1>
+      <p class="detail-lead">{post.data.description}</p>
+      <div class="tags">
+        {post.data.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="article-layout">
+      <div class="article-main">
+        <Toc headings={headings} title="文章目录" mode="mobile" />
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        {(newer || older) && (
+          <nav class="article-nav" aria-label="相邻文章">
+            {newer ? (
+              <a class="article-nav-item prev" href={url(`blog/${newer.id}/`)}>
+                <span class="article-nav-label">← 较新文章</span>
+                <span class="article-nav-title">{newer.data.title}</span>
+              </a>
+            ) : <div />}
+            {older ? (
+              <a class="article-nav-item next" href={url(`blog/${older.id}/`)}>
+                <span class="article-nav-label">较早文章 →</span>
+                <span class="article-nav-title">{older.data.title}</span>
+              </a>
+            ) : <div />}
+          </nav>
+        )}
+
+        <div class="detail-footer-bar">
+          <a href={url('blog/')}>← 返回全部文章</a>
+          <a href={url('projects/')}>查看项目作品 →</a>
+        </div>
+      </div>
+
+      <Toc headings={headings} title="文章目录" mode="desktop" />
+    </div>
+  </article>
+</Layout>

@@ -1,8 +1,43 @@
 ---
-import { url } from '../lib/site';
-const { project } = Astro.props;
+import type { CollectionEntry } from 'astro:content';
+import { url, formatDate } from '../lib/site';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  headingTag?: 'h2' | 'h3';
+}
+
+const { project, headingTag = 'h3' } = Astro.props;
+const Heading = headingTag;
 ---
 <a class="project-card" href={url(`projects/${project.id}/`)}>
-  <div class="project-image"><img src={url(project.data.cover)} alt={`${project.data.title}概念示意图`} loading="lazy" width="640" height="400"/><span class="image-label">{project.data.status}</span></div>
-  <div class="project-info"><div class="tags">{project.data.tags.map((tag: string) => <span>{tag}</span>)}</div><h3>{project.data.title}</h3><p>{project.data.description}</p><span class="text-link">查看项目详情 <span>＋</span></span></div>
+  <div class="project-media">
+    <img
+      src={url(project.data.cover)}
+      alt={`${project.data.title}（${project.data.status}示意图）`}
+      loading="lazy"
+      decoding="async"
+      width="1200"
+      height="650"
+    />
+  </div>
+
+  <div class="project-body">
+    <div class="project-meta-row">
+      <span class="status-badge">{project.data.status}</span>
+      <span class="project-date mono">{formatDate(project.data.date)}</span>
+    </div>
+
+    <Heading class="project-title">{project.data.title}</Heading>
+    <p class="project-desc">{project.data.description}</p>
+
+    <div class="project-foot">
+      <div class="tags">
+        {project.data.tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+      <span class="card-cta mono">详情 →</span>
+    </div>
+  </div>
 </a>

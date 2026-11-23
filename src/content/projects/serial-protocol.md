@@ -35,7 +35,7 @@ CRC：      0xCDC5
 附加字节： C5 CD
 ```
 
-这里的算法使用初始值 FFFF、反射多项式 A001、无最终异或，并先发送低字节。[MODBUS 串行规范](https://www.modbus.org/file/secure/modbusoverserial.pdf) 说明了算法与传输顺序。本站 [工具箱](../../tools/) 可计算同一向量。
+这里的算法使用初始值 FFFF、反射多项式 A001、无最终异或，并先发送低字节。[MODBUS 串行规范](https://www.modbus.org/file/secure/modbusoverserial.pdf) 说明了算法与传输顺序。
 
 ## 展示与复现
 

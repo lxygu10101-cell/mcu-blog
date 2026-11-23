@@ -2,4 +2,48 @@
 import Layout from '../../layouts/Layout.astro';
 import { url, site } from '../../lib/site';
 ---
-<Layout title="关于本站"><section class="wrap page-section about-page"><p class="eyebrow">ABOUT THIS WORKBENCH</p><h1 class="page-title">保持好奇，<br/>持续动手。</h1><p class="page-lead">这里是一个面向 STM32 与 C 语言的个人嵌入式技术博客。</p><div class="prose"><h2>一张持续生长的工作台</h2><p>用项目组织实践，用文章沉淀方法，用小工具节省重复劳动。这个网站围绕硬件与固件展开，也为以后的新方向留出空间。</p><h2>目前的内容</h2><p>网站已具备项目详情、Markdown 博客、图片与视频展示入口、全文搜索和本地运行的开发工具。项目作品集中的两项内容是示例模板，不代表作者已经完成了这些作品。</p><p>作者姓名、个人简介、联系方式与真实项目尚待补充，页面没有虚构个人履历或成果数据。</p><h2>写作与更新</h2><p>文章以 Markdown 文件保存，可在 Obsidian 中编辑。只导入明确选中的笔记与附件，草稿不会出现在公开页面或搜索索引中。</p><p><a href={url('blog/obsidian-publishing/')}>阅读 Markdown 与 Obsidian 写作指南</a></p><h2>网站源码</h2><p>基于 Astro 构建，配置 GitHub Pages 自动部署。搜索和开发工具在浏览器中运行，输入内容不需要上传到服务器。</p><a class="button secondary" href={site.github} target="_blank" rel="noreferrer">浏览 GitHub 仓库</a></div></section></Layout>
+<Layout title="关于" description="关于 MCU / NOTES 嵌入式开发个人网站与写作方式说明。">
+  <section class="wrap page-section">
+    <header class="page-header">
+      <p class="eyebrow">ABOUT</p>
+      <h1 class="page-title">关于本站</h1>
+      <p class="page-lead">面向 STM32、C 语言与嵌入式硬件实践的个人项目记录与技术笔记。</p>
+    </header>
+
+    <div class="about-content">
+      <div class="prose">
+        <h2>网站定位</h2>
+        <p>
+          MCU / NOTES 用于系统整理嵌入式开发中的项目实现与技术文章，围绕微控制器、外设驱动、通信协议和固件架构展开，力求结构清晰、便于回溯与复现。
+        </p>
+
+        <h2>当前内容说明</h2>
+        <p>
+          网站已支持嵌入式项目展示、Markdown 技术博客、图片与演示视频嵌入以及本地静态全文搜索。当前项目列表中的两项内容为结构示例模板，不代表作者已完成的真实工程。
+        </p>
+        <p>
+          作者姓名、个人履历、联系方式及真实项目数据尚未录入，本站不虚构任何项目成果或测试指标。
+        </p>
+
+        <h2>写作与发布</h2>
+        <p>
+          所有文章与项目均以 Markdown 文件维护，兼容 Obsidian 常用双链与媒体引用语法。仅导入明确选中的笔记和附件，草稿不会出现在公开页面或搜索索引中。
+        </p>
+        <p>
+          <a href={url('blog/obsidian-publishing/')}>阅读 Markdown 与 Obsidian 写作指南</a>
+        </p>
+
+        <h2>技术栈与源码</h2>
+        <p>
+          基于 Astro 静态构建并通过 GitHub Pages 自动部署。全文搜索在浏览器本地完成，无需后台服务或外部追踪脚本。
+        </p>
+      </div>
+
+      <div class="detail-actions">
+        <a class="button secondary" href={site.github} target="_blank" rel="noreferrer">
+          浏览 GitHub 仓库 →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

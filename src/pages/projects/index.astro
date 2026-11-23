@@ -2,6 +2,26 @@
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
-const projects = await getCollection('projects', ({data})=>!data.draft);
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || b.data.date.valueOf() - a.data.date.valueOf());
 ---
-<Layout title="项目作品集"><section class="wrap page-section"><p class="eyebrow">PROJECT ARCHIVE</p><h1 class="page-title">让代码，在硬件上运行。</h1><p class="page-lead">从需求、系统设计到调试记录，保留一个项目的完整脉络。</p><div class="notice">当前展示的是项目模板与概念插图，尚未录入作者的真实项目、照片或性能数据。</div><div class="project-grid">{projects.map(project=><ProjectCard project={project}/>)}</div></section></Layout>
+<Layout title="项目" description="STM32、C 语言与嵌入式硬件项目记录，包含系统设计、实现过程与调试笔记。">
+  <section class="wrap page-section">
+    <header class="page-header">
+      <p class="eyebrow">PROJECTS</p>
+      <h1 class="page-title">嵌入式项目</h1>
+      <p class="page-lead">从系统设计、固件架构到硬件调试，保留每个项目的完整工程脉络。</p>
+    </header>
+
+    <div class="notice">
+      当前展示的是项目结构模板与概念示意图，尚未录入作者的真实工程、实物照片或实测数据。
+    </div>
+
+    <div class="project-grid">
+      {projects.map((project) => (
+        <ProjectCard project={project} headingTag="h2" />
+      ))}
+    </div>
+  </section>
+</Layout>

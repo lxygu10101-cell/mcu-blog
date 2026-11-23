@@ -1,34 +1,217 @@
 ---
 import '../styles/global.css';
-import { site, url } from '../lib/site';
-const { title = '从一行 C，到一个真实的作品', description = site.description } = Astro.props;
-const path = Astro.url.pathname;
-const nav = [['首页',''],['项目','projects/'],['博客','blog/'],['工具箱','tools/'],['关于','about/']];
+import { site, navItems, url } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.title}` : `${site.title} · ${site.subtitle}`;
+const currentPath = Astro.url.pathname;
+
+const isActive = (href: string) => {
+  const target = url(href);
+  return href ? currentPath.startsWith(target) : currentPath === target;
+};
 ---
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content={description}/><meta name="theme-color" content="#101315"/>
-  <title>{title} · MCU / NOTES</title>
-  <link rel="icon" type="image/svg+xml" href={url('favicon.svg')}/>
-  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)}/>
-  <meta property="og:title" content={`${title} · MCU / NOTES`}/><meta property="og:description" content={description}/><meta property="og:type" content="website"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#0c0f11" />
+  <title>{pageTitle}</title>
+  <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+  <link rel="canonical" href={new URL(currentPath, Astro.site)} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
 </head>
 <body>
   <a class="skip-link" href="#main">跳到主要内容</a>
-  <header class="header wrap">
-    <a class="brand" href={url()} aria-label="MCU NOTES 首页"><span class="brand-icon">μ</span><span>MCU<span class="brand-slash"> / </span>NOTES<small>嵌入式开发手记</small></span></a>
-    <nav aria-label="主导航">{nav.map(([name,href]) => <a href={url(href)} class:list={[(href ? path.startsWith(url(href)) : path === url()) && 'active']} aria-current={(href ? path.startsWith(url(href)) : path === url()) ? 'page' : undefined}>{name}</a>)}</nav>
-    <a class="search-trigger" href={url('search/')} aria-label="搜索文章与项目"><svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>搜索</span><kbd>/</kbd></a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href={url()} aria-label="MCU / NOTES 首页">
+        <span class="brand-mark" aria-hidden="true">μ</span>
+        <span>MCU<span class="brand-slash">/</span>NOTES</span>
+      </a>
+
+      <nav class="site-nav" aria-label="主导航">
+        {navItems.map((item) => {
+          const active = isActive(item.href);
+          return (
+            <a
+              href={url(item.href)}
+              class:list={[active && 'active']}
+              aria-current={active ? 'page' : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <a class="search-trigger" href={url('search/')} aria-label="搜索文章与项目（按 / 键快速打开）" title="按 / 键搜索">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" />
+          <path d="m16 16 4.5 4.5" />
+        </svg>
+        <span>搜索</span>
+        <kbd>/</kbd>
+      </a>
+    </div>
   </header>
-  <main id="main"><slot/></main>
-  <footer class="footer wrap"><div><a class="footer-brand" href={url()}>MCU / NOTES</a><p>认真记录每一次，从想法到实现。</p></div><div class="footer-links"><a href={site.github} target="_blank" rel="noreferrer">GitHub</a><a href={url('blog/obsidian-publishing/')}>写作指南</a><a href={url('about/')}>关于本站</a><span>© {new Date().getUTCFullYear()} MCU / NOTES</span></div></footer>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href={url()}>{site.title}</a>
+      <div class="footer-links">
+        <a href={site.github} target="_blank" rel="noreferrer">GitHub</a>
+        <a href={url('blog/obsidian-publishing/')}>写作指南</a>
+        <a href={url('about/')}>关于</a>
+        <span class="mono">© {new Date().getUTCFullYear()}</span>
+      </div>
+    </div>
+  </footer>
+
   <script>
+    // Keyboard shortcut: press '/' to jump to search
     document.addEventListener('keydown', (event) => {
-      const target = event.target as HTMLElement;
-      if(event.key === '/' && !event.ctrlKey && !event.metaKey && !['INPUT','TEXTAREA','SELECT'].includes(target.tagName) && !target.isContentEditable){event.preventDefault(); (document.querySelector('.search-trigger') as HTMLAnchorElement)?.click();}
+      const target = event.target as HTMLElement | null;
+      if (
+        event.key === '/' &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.altKey &&
+        target &&
+        !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) &&
+        !target.isContentEditable
+      ) {
+        event.preventDefault();
+        (document.querySelector('.search-trigger') as HTMLAnchorElement | null)?.click();
+      }
     });
+
+    // Wrap markdown tables for full-width layout + horizontal scroll on narrow screens
+    document.querySelectorAll<HTMLTableElement>('.prose table').forEach((table) => {
+      if (table.parentElement?.classList.contains('table-wrap')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'table-wrap';
+      table.parentNode?.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
+    });
+
+    // Enhance code blocks with header bar + copy button
+    document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+      if (pre.parentElement?.classList.contains('code-block-wrap')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrap';
+      pre.parentNode?.insertBefore(wrapper, pre);
+
+      const bar = document.createElement('div');
+      bar.className = 'code-bar';
+
+      const rawLang = (pre.dataset.language || '').toLowerCase();
+      const label = document.createElement('span');
+      label.className = 'code-lang-label';
+      label.textContent = rawLang && rawLang !== 'plaintext' && rawLang !== 'text' ? rawLang : 'text';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'code-copy-btn';
+      button.textContent = '复制';
+      button.setAttribute('aria-label', '复制代码块内容');
+      button.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? '';
+        try {
+          await navigator.clipboard.writeText(code);
+          button.textContent = '已复制';
+          button.dataset.copied = 'true';
+          setTimeout(() => {
+            button.textContent = '复制';
+            delete button.dataset.copied;
+          }, 1600);
+        } catch {
+          button.textContent = '复制失败';
+        }
+      });
+
+      bar.append(label, button);
+      wrapper.append(bar, pre);
+    });
+
+    // Prevent short inline code tokens (e.g. `ARR + 1`) from splitting awkwardly across lines
+    document.querySelectorAll<HTMLElement>('.prose :not(pre) > code').forEach((code) => {
+      if ((code.textContent || '').trim().length <= 24) {
+        code.classList.add('code-nowrap');
+      }
+    });
+
+    // Auto-close mobile TOC when selecting a heading
+    document.querySelectorAll<HTMLDetailsElement>('.mobile-toc').forEach((details) => {
+      details.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          details.open = false;
+        });
+      });
+    });
+
+    // Scroll-spy for desktop sticky TOC (handles both normal scroll and bottom-of-page)
+    const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc-nav a')];
+    if (tocLinks.length > 0) {
+      const headings = tocLinks
+        .map((link) => {
+          const id = decodeURIComponent(link.getAttribute('href')?.slice(1) || '');
+          return id ? document.getElementById(id) : null;
+        })
+        .filter((el): el is HTMLElement => Boolean(el));
+
+      const setActive = (id: string) => {
+        tocLinks.forEach((link) => {
+          const targetId = decodeURIComponent(link.getAttribute('href')?.slice(1) || '');
+          link.classList.toggle('active', targetId === id);
+        });
+      };
+
+      const updateActiveHeading = () => {
+        if (!headings.length) return;
+        const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24;
+        if (nearBottom) {
+          setActive(headings[headings.length - 1].id);
+          return;
+        }
+        let current = headings[0];
+        for (const heading of headings) {
+          if (heading.getBoundingClientRect().top <= 128) {
+            current = heading;
+          } else {
+            break;
+          }
+        }
+        setActive(current.id);
+      };
+
+      let ticking = false;
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          updateActiveHeading();
+          ticking = false;
+        });
+      };
+
+      updateActiveHeading();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
   </script>
 </body>
 </html>

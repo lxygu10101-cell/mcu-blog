@@ -1,0 +1,41 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  title?: string;
+  mode: 'mobile' | 'desktop';
+}
+
+const { headings, title = '目录', mode } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+{items.length > 0 && mode === 'mobile' && (
+  <details class="mobile-toc">
+    <summary>{title}</summary>
+    <nav class="mobile-toc-list" aria-label={title}>
+      {items.map((h) => (
+        <a href={`#${h.slug}`} class:list={[h.depth === 3 && 'toc-sub']}>
+          {h.text}
+        </a>
+      ))}
+    </nav>
+  </details>
+)}
+
+{items.length > 0 && mode === 'desktop' && (
+  <aside class="toc" aria-label={title}>
+    <p class="toc-title">{title}</p>
+    <nav class="toc-nav">
+      {items.map((h) => (
+        <a href={`#${h.slug}`} class:list={[h.depth === 3 && 'toc-sub']}>
+          {h.text}
+        </a>
+      ))}
+    </nav>
+  </aside>
+)}

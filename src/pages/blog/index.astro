@@ -1,8 +1,86 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
-import { url, date } from '../../lib/site';
-const posts = (await getCollection('blog',({data})=>!data.draft)).sort((a,b)=>b.data.date.valueOf()-a.data.date.valueOf());
-const tags = [...new Set(posts.flatMap(p=>p.data.tags))];
+import { url, formatDate, readingMinutes } from '../../lib/site';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
 ---
-<Layout title="技术博客"><section class="wrap page-section"><p class="eyebrow">NOTES & EXPLORATIONS</p><h1 class="page-title">把走过的路，写下来。</h1><p class="page-lead">代码背后的思考，调试过程中的发现，以及值得复用的方法。</p><div class="filter-bar" aria-label="按标签筛选文章"><button class="filter active" data-tag="all" aria-pressed="true">全部文章</button>{tags.map(tag=><button class="filter" data-tag={tag} aria-pressed="false">{tag}</button>)}</div><div class="post-list">{posts.map(post=><a class="post-row filter-post" data-tags={JSON.stringify(post.data.tags)} href={url(`blog/${post.id}/`)}><span class="post-date mono">{date(post.data.date)}</span><div><div class="post-meta">{post.data.category} · {post.data.tags.join(' / ')}</div><h2>{post.data.title}</h2><p>{post.data.description}</p></div><span class="row-plus" aria-hidden="true">＋</span></a>)}</div></section><script>document.querySelectorAll<HTMLButtonElement>('.filter').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});button.classList.add('active');button.setAttribute('aria-pressed','true');document.querySelectorAll<HTMLElement>('.filter-post').forEach(post=>post.hidden=button.dataset.tag!=='all' && !JSON.parse(post.dataset.tags||'[]').includes(button.dataset.tag));}));</script></Layout>
+<Layout title="博客" description="关于 STM32、C 语言、外设驱动、通信协议与工程实践的嵌入式开发文章。">
+  <section class="wrap page-section">
+    <header class="page-header">
+      <p class="eyebrow">BLOG</p>
+      <h1 class="page-title">技术博客</h1>
+      <p class="page-lead">记录代码实现、外设调试过程与可复用的嵌入式工程方法。</p>
+    </header>
+
+    <div class="filter-controls">
+      <div class="filter-bar" role="group" aria-label="按标签筛选文章">
+        <button type="button" class="filter active" data-tag="all" aria-pressed="true">全部</button>
+        {tags.map((tag) => (
+          <button type="button" class="filter" data-tag={tag} aria-pressed="false">
+            {tag}
+          </button>
+        ))}
+      </div>
+      <p class="filter-count tabular" id="post-count" aria-live="polite">共 {posts.length} 篇</p>
+    </div>
+
+    <div class="post-list">
+      {posts.map((post) => (
+        <a
+          class="post-row filter-post"
+          data-tags={JSON.stringify(post.data.tags)}
+          href={url(`blog/${post.id}/`)}
+        >
+          <time class="post-date mono" datetime={post.data.date.toISOString()}>
+            {formatDate(post.data.date)}
+          </time>
+          <div class="post-content">
+            <h2 class="post-title">{post.data.title}</h2>
+            <p class="post-excerpt">{post.data.description}</p>
+            <div class="post-meta-line">
+              <span class="post-category">{post.data.category}</span>
+              <span class="tabular">约 {readingMinutes(post.body)} 分钟</span>
+              {post.data.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+          <span class="post-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
+    const items = document.querySelectorAll<HTMLElement>('.filter-post');
+    const countEl = document.getElementById('post-count');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.tag || 'all';
+        buttons.forEach((b) => {
+          const active = b === button;
+          b.classList.toggle('active', active);
+          b.setAttribute('aria-pressed', String(active));
+        });
+
+        let visible = 0;
+        items.forEach((post) => {
+          const tags: string[] = JSON.parse(post.dataset.tags || '[]');
+          const match = selected === 'all' || tags.includes(selected);
+          post.hidden = !match;
+          if (match) visible += 1;
+        });
+
+        if (countEl) {
+          countEl.textContent = selected === 'all' ? `共 ${visible} 篇` : `${selected} · ${visible} 篇`;
+        }
+      });
+    });
+  </script>
+</Layout>
