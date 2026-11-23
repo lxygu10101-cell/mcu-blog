@@ -47,12 +47,19 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
         </div>
         <a class="quiet-link" href={url('projects/')}>全部项目 <span>→</span></a>
       </div>
-      <p class="section-hint">记录系统架构、固件实现与调试过程；当前条目为可替换的示例项目模板。</p>
-      <div class="project-grid">
-        {projects.map((project) => (
-          <ProjectCard project={project} headingTag="h3" />
-        ))}
-      </div>
+
+      {projects.length > 0 ? (
+        <div class="project-grid">
+          {projects.map((project) => (
+            <ProjectCard project={project} headingTag="h3" />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-panel">
+          <p class="empty-panel-title">暂无项目</p>
+          <p class="empty-panel-desc">嵌入式项目整理中，后续将在此展示硬件方案、固件实现与调试记录。</p>
+        </div>
+      )}
     </div>
   </section>
 
@@ -65,26 +72,34 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
         </div>
         <a class="quiet-link" href={url('blog/')}>全部文章 <span>→</span></a>
       </div>
-      <div class="post-list">
-        {posts.map((post) => (
-          <a class="post-row" href={url(`blog/${post.id}/`)}>
-            <time class="post-date mono" datetime={post.data.date.toISOString()}>
-              {formatDate(post.data.date)}
-            </time>
-            <div class="post-content">
-              <h3 class="post-title">{post.data.title}</h3>
-              <p class="post-excerpt">{post.data.description}</p>
-              <div class="post-meta-line">
-                <span class="post-category">{post.data.category}</span>
-                {post.data.tags.map((tag) => (
-                  <span class="tag">{tag}</span>
-                ))}
+
+      {posts.length > 0 ? (
+        <div class="post-list">
+          {posts.map((post) => (
+            <a class="post-row" href={url(`blog/${post.id}/`)}>
+              <time class="post-date mono" datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+              <div class="post-content">
+                <h3 class="post-title">{post.data.title}</h3>
+                <p class="post-excerpt">{post.data.description}</p>
+                <div class="post-meta-line">
+                  <span class="post-category">{post.data.category}</span>
+                  {post.data.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
               </div>
-            </div>
-            <span class="post-arrow" aria-hidden="true">→</span>
-          </a>
-        ))}
-      </div>
+              <span class="post-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-panel">
+          <p class="empty-panel-title">暂无文章</p>
+          <p class="empty-panel-desc">技术博客整理中，后续将持续更新 STM32、C 语言与外设调试笔记。</p>
+        </div>
+      )}
     </div>
   </section>
 </Layout>

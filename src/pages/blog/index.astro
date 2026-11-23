@@ -16,43 +16,52 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
       <p class="page-lead">记录代码实现、外设调试过程与可复用的嵌入式工程方法。</p>
     </header>
 
-    <div class="filter-controls">
-      <div class="filter-bar" role="group" aria-label="按标签筛选文章">
-        <button type="button" class="filter active" data-tag="all" aria-pressed="true">全部</button>
-        {tags.map((tag) => (
-          <button type="button" class="filter" data-tag={tag} aria-pressed="false">
-            {tag}
-          </button>
-        ))}
-      </div>
-      <p class="filter-count tabular" id="post-count" aria-live="polite">共 {posts.length} 篇</p>
-    </div>
-
-    <div class="post-list">
-      {posts.map((post) => (
-        <a
-          class="post-row filter-post"
-          data-tags={JSON.stringify(post.data.tags)}
-          href={url(`blog/${post.id}/`)}
-        >
-          <time class="post-date mono" datetime={post.data.date.toISOString()}>
-            {formatDate(post.data.date)}
-          </time>
-          <div class="post-content">
-            <h2 class="post-title">{post.data.title}</h2>
-            <p class="post-excerpt">{post.data.description}</p>
-            <div class="post-meta-line">
-              <span class="post-category">{post.data.category}</span>
-              <span class="tabular">约 {readingMinutes(post.body)} 分钟</span>
-              {post.data.tags.map((tag) => (
-                <span class="tag">{tag}</span>
-              ))}
-            </div>
+    {posts.length > 0 ? (
+      <>
+        <div class="filter-controls">
+          <div class="filter-bar" role="group" aria-label="按标签筛选文章">
+            <button type="button" class="filter active" data-tag="all" aria-pressed="true">全部</button>
+            {tags.map((tag) => (
+              <button type="button" class="filter" data-tag={tag} aria-pressed="false">
+                {tag}
+              </button>
+            ))}
           </div>
-          <span class="post-arrow" aria-hidden="true">→</span>
-        </a>
-      ))}
-    </div>
+          <p class="filter-count tabular" id="post-count" aria-live="polite">共 {posts.length} 篇</p>
+        </div>
+
+        <div class="post-list">
+          {posts.map((post) => (
+            <a
+              class="post-row filter-post"
+              data-tags={JSON.stringify(post.data.tags)}
+              href={url(`blog/${post.id}/`)}
+            >
+              <time class="post-date mono" datetime={post.data.date.toISOString()}>
+                {formatDate(post.data.date)}
+              </time>
+              <div class="post-content">
+                <h2 class="post-title">{post.data.title}</h2>
+                <p class="post-excerpt">{post.data.description}</p>
+                <div class="post-meta-line">
+                  <span class="post-category">{post.data.category}</span>
+                  <span class="tabular">约 {readingMinutes(post.body)} 分钟</span>
+                  {post.data.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              </div>
+              <span class="post-arrow" aria-hidden="true">→</span>
+            </a>
+          ))}
+        </div>
+      </>
+    ) : (
+      <div class="empty-panel">
+        <p class="empty-panel-title">暂无技术文章</p>
+        <p class="empty-panel-desc">尚未发布任何博客文章。后续在 <code>src/content/blog/</code> 添加 Markdown 文件即可自动发布。</p>
+      </div>
+    )}
   </section>
 
   <script>

@@ -14,14 +14,17 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
       <p class="page-lead">从系统设计、固件架构到硬件调试，保留每个项目的完整工程脉络。</p>
     </header>
 
-    <div class="notice">
-      当前展示的是项目结构模板与概念示意图，尚未录入作者的真实工程、实物照片或实测数据。
-    </div>
-
-    <div class="project-grid">
-      {projects.map((project) => (
-        <ProjectCard project={project} headingTag="h2" />
-      ))}
-    </div>
+    {projects.length > 0 ? (
+      <div class="project-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} headingTag="h2" />
+        ))}
+      </div>
+    ) : (
+      <div class="empty-panel">
+        <p class="empty-panel-title">暂无项目记录</p>
+        <p class="empty-panel-desc">尚未上传嵌入式项目。后续在 <code>src/content/projects/</code> 添加 Markdown 文件即可自动展示。</p>
+      </div>
+    )}
   </section>
 </Layout>

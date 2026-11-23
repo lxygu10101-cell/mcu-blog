@@ -51,6 +51,23 @@ import { url } from '../../lib/site';
 
     function renderResults() {
       const query = input.value.trim();
+      container.replaceChildren();
+
+      if (!rows.length) {
+        status.textContent = '当前暂无已发布的文章或项目';
+        const empty = document.createElement('div');
+        empty.className = 'empty-panel';
+        const title = document.createElement('p');
+        title.className = 'empty-panel-title';
+        title.textContent = '暂无可检索内容';
+        const desc = document.createElement('p');
+        desc.className = 'empty-panel-desc';
+        desc.textContent = '发布文章或嵌入式项目后，可在此按关键词与标签实时搜索。';
+        empty.append(title, desc);
+        container.append(empty);
+        return;
+      }
+
       const tokens = normalize(query).split(/\s+/).filter(Boolean);
       const found = rows.filter((row) =>
         tokens.every((token) =>
@@ -61,8 +78,6 @@ import { url } from '../../lib/site';
       status.textContent = query
         ? `找到 ${found.length} 条与“${query}”相关的内容`
         : `共索引 ${rows.length} 条内容，输入关键词即时筛选`;
-
-      container.replaceChildren();
 
       for (const row of found) {
         const link = document.createElement('a');

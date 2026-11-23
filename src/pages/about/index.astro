@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { url, site } from '../../lib/site';
+import { site } from '../../lib/site';
 ---
 <Layout title="关于" description="关于 MCU / NOTES 嵌入式开发个人网站与写作方式说明。">
   <section class="wrap page-section">
@@ -17,25 +17,19 @@ import { url, site } from '../../lib/site';
           MCU / NOTES 用于系统整理嵌入式开发中的项目实现与技术文章，围绕微控制器、外设驱动、通信协议和固件架构展开，力求结构清晰、便于回溯与复现。
         </p>
 
-        <h2>当前内容说明</h2>
+        <h2>当前状态</h2>
         <p>
-          网站已支持嵌入式项目展示、Markdown 技术博客、图片与演示视频嵌入以及本地静态全文搜索。当前项目列表中的两项内容为结构示例模板，不代表作者已完成的真实工程。
-        </p>
-        <p>
-          作者姓名、个人履历、联系方式及真实项目数据尚未录入，本站不虚构任何项目成果或测试指标。
+          站点已完成基础结构搭建，支持嵌入式项目展示、Markdown 技术博客、图片与演示视频嵌入以及本地静态全文搜索。当前尚未上传公开项目、文章或个人简介，后续将陆续补充真实工程内容。
         </p>
 
         <h2>写作与发布</h2>
         <p>
           所有文章与项目均以 Markdown 文件维护，兼容 Obsidian 常用双链与媒体引用语法。仅导入明确选中的笔记和附件，草稿不会出现在公开页面或搜索索引中。
         </p>
-        <p>
-          <a href={url('blog/obsidian-publishing/')}>阅读 Markdown 与 Obsidian 写作指南</a>
-        </p>
 
         <h2>技术栈与源码</h2>
         <p>
-          基于 Astro 静态构建并通过 GitHub Pages 自动部署。全文搜索在浏览器本地完成，无需后台服务或外部追踪脚本。
+          基于 Astro 静态构建并通过 GitHub Pages 自动部署。全文搜索与主题切换均在浏览器本地完成，无需后台服务或外部追踪脚本。
         </p>
       </div>
 

@@ -1521,6 +1521,40 @@ html.theme-switching *::after {
   font-size: 14.5px;
 }
 
+.empty-panel {
+  padding: 28px 24px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+}
+
+.empty-panel-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.empty-panel-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.empty-panel-desc code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--inline-code-bg);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--inline-code-text);
+}
+
+.search-results:has(.empty-panel) {
+  border-top: 0;
+}
+
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--border);
